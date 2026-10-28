@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.routers import pilotos
+from app.routers import asientos, empresas, reportes
 
 app = FastAPI(title="DB Unbosque API")
 
@@ -13,7 +13,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(pilotos.router)
+app.include_router(empresas.router)
+app.include_router(asientos.router)
+app.include_router(reportes.router)
 
 
 @app.get("/health")
