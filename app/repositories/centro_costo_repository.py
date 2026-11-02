@@ -11,25 +11,55 @@ from app.core.database import (
 # Parámetros: id_empresa (int), codigo (str), nombre (str).
 # Retorna: la fila insertada de CENTRO_COSTO.
 # Tablas: CENTRO_COSTO.
-_SQL_CREAR_CENTRO_COSTO = """"""
+_SQL_CREAR_CENTRO_COSTO = """
+INSERT INTO centro_costo (id_empresa, codigo, nombre)
+VALUES (%(id_empresa)s, %(codigo)s, %(nombre)s)
+RETURNING id_centro_costo, id_empresa, codigo, nombre;
+"""
 
 # Propósito: listar todos los centros de costo de una empresa ordenados por código.
 # Parámetros: id_empresa (int).
 # Retorna: lista de filas de CENTRO_COSTO.
 # Tablas: CENTRO_COSTO.
-_SQL_LISTAR_POR_EMPRESA = """"""
+_SQL_LISTAR_POR_EMPRESA = """
+SELECT
+    id_centro_costo,
+    id_empresa,
+    codigo,
+    nombre
+FROM centro_costo
+WHERE id_empresa = %(id_empresa)s
+ORDER BY codigo ASC;
+"""
 
 # Propósito: obtener un centro de costo por su identificador único.
 # Parámetros: id_centro_costo (int).
 # Retorna: una fila de CENTRO_COSTO o ninguna.
 # Tablas: CENTRO_COSTO.
-_SQL_OBTENER_POR_ID = """"""
+_SQL_OBTENER_POR_ID = """
+SELECT
+    id_centro_costo,
+    id_empresa,
+    codigo,
+    nombre
+FROM centro_costo
+WHERE id_centro_costo = %(id_centro_costo)s;
+"""
 
 # Propósito: buscar un centro de costo por (id_empresa, codigo) para validar unicidad.
 # Parámetros: id_empresa (int), codigo (str).
 # Retorna: una fila de CENTRO_COSTO o ninguna.
 # Tablas: CENTRO_COSTO.
-_SQL_OBTENER_POR_CODIGO_EMPRESA = """"""
+_SQL_OBTENER_POR_CODIGO_EMPRESA = """
+SELECT
+    id_centro_costo,
+    id_empresa,
+    codigo,
+    nombre
+FROM centro_costo
+WHERE id_empresa = %(id_empresa)s
+  AND codigo = %(codigo)s;
+"""
 
 
 class CentroCostoRepository:

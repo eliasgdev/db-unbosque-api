@@ -11,26 +11,59 @@ from app.core.database import (
 # Parámetros: id_empresa (int), documento (str), nombre (str), tipo (str).
 # Retorna: la fila insertada de TERCERO.
 # Tablas: TERCERO.
-_SQL_CREAR_TERCERO = """"""
+_SQL_CREAR_TERCERO = """
+INSERT INTO tercero (id_empresa, documento, nombre, tipo)
+VALUES (%(id_empresa)s, %(documento)s, %(nombre)s, %(tipo)s)
+RETURNING id_tercero, id_empresa, documento, nombre, tipo;
+"""
 
-# Propósito: listar todos los terceros pertenecientes a una empresa ordenados por
-#   nombre.
+# Propósito: listar todos los terceros pertenecientes a una empresa ordenados
+#            por nombre.
 # Parámetros: id_empresa (int).
 # Retorna: lista de filas de TERCERO.
 # Tablas: TERCERO.
-_SQL_LISTAR_POR_EMPRESA = """"""
+_SQL_LISTAR_POR_EMPRESA = """
+SELECT
+    id_tercero,
+    id_empresa,
+    documento,
+    nombre,
+    tipo
+FROM tercero
+WHERE id_empresa = %(id_empresa)s
+ORDER BY nombre ASC;
+"""
 
 # Propósito: obtener un tercero por su identificador único.
 # Parámetros: id_tercero (int).
 # Retorna: una fila de TERCERO o ninguna.
 # Tablas: TERCERO.
-_SQL_OBTENER_POR_ID = """"""
+_SQL_OBTENER_POR_ID = """
+SELECT
+    id_tercero,
+    id_empresa,
+    documento,
+    nombre,
+    tipo
+FROM tercero
+WHERE id_tercero = %(id_tercero)s;
+"""
 
 # Propósito: buscar un tercero por (id_empresa, documento) para validar unicidad.
 # Parámetros: id_empresa (int), documento (str).
 # Retorna: una fila de TERCERO o ninguna.
 # Tablas: TERCERO.
-_SQL_OBTENER_POR_DOCUMENTO_EMPRESA = """"""
+_SQL_OBTENER_POR_DOCUMENTO_EMPRESA = """
+SELECT
+    id_tercero,
+    id_empresa,
+    documento,
+    nombre,
+    tipo
+FROM tercero
+WHERE id_empresa = %(id_empresa)s
+  AND documento = %(documento)s;
+"""
 
 
 class TerceroRepository:

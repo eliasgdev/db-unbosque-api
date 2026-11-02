@@ -11,13 +11,27 @@ from app.core.database import (
 # Parámetros: ninguno.
 # Retorna: lista de filas de TIPO_CUENTA.
 # Tablas: TIPO_CUENTA.
-_SQL_LISTAR_TIPOS_CUENTA = """"""
+_SQL_LISTAR_TIPOS_CUENTA = """
+SELECT
+    id_tipo_cuenta,
+    clase,
+    naturaleza
+FROM tipo_cuenta
+ORDER BY id_tipo_cuenta ASC;
+"""
 
 # Propósito: obtener un tipo de cuenta por su identificador primario.
 # Parámetros: id_tipo_cuenta (int).
 # Retorna: una fila de TIPO_CUENTA o ninguna.
 # Tablas: TIPO_CUENTA.
-_SQL_OBTENER_POR_ID = """"""
+_SQL_OBTENER_POR_ID = """
+SELECT
+    id_tipo_cuenta,
+    clase,
+    naturaleza
+FROM tipo_cuenta
+WHERE id_tipo_cuenta = %(id_tipo_cuenta)s;
+"""
 
 
 class TipoCuentaRepository:

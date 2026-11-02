@@ -6,7 +6,9 @@ from app.core.database import FilaDict, SesionBD, ejecutar_consulta_uno
 # Parámetros: ninguno.
 # Retorna: una fila con un indicador de verificación o ninguna.
 # Tablas: ninguna (catálogo del motor PostgreSQL).
-_SQL_VERIFICAR_CONEXION = """"""
+_SQL_VERIFICAR_CONEXION = """
+SELECT 1 AS ok;
+"""
 
 
 class HealthRepository:
