@@ -17,3 +17,11 @@ __pycache__/
 Thumbs.db
 .vscode/
 .idea/
+
+# Bases locales, llaves y respaldos que nunca deben subirse
+*.db
+*.sqlite
+*.sqlite3
+*.pem
+*.key
+*.bak*

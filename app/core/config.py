@@ -8,6 +8,7 @@ el arranque falla con un mensaje explicativo.
 from functools import lru_cache
 from typing import Literal
 
+from psycopg.conninfo import make_conninfo
 from pydantic import Field, ValidationError, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -63,14 +64,18 @@ class Settings(BaseSettings):
 
     @property
     def db_conninfo(self) -> str:
-        """Construye la cadena de conexión DSN para psycopg 3."""
-        return (
-            f"host={self.db_host} "
-            f"port={self.db_port} "
-            f"dbname={self.db_name} "
-            f"user={self.db_user} "
-            f"password={self.db_password} "
-            f"sslmode={self.db_sslmode}"
+        """Construye la cadena de conexión DSN para psycopg 3.
+
+        Usa ``make_conninfo`` para escapar los valores: una contraseña con
+        espacios, comillas o barras invertidas no rompe la cadena.
+        """
+        return make_conninfo(
+            host=self.db_host,
+            port=self.db_port,
+            dbname=self.db_name,
+            user=self.db_user,
+            password=self.db_password,
+            sslmode=self.db_sslmode,
         )
 
 
