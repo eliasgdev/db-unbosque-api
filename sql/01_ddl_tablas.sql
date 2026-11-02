@@ -62,7 +62,9 @@ CREATE TABLE IF NOT EXISTS tipo_cuenta (
     clase VARCHAR(15) NOT NULL,
     naturaleza VARCHAR(7) NOT NULL,
     CONSTRAINT pk_tipo_cuenta PRIMARY KEY (id_tipo_cuenta),
-    CONSTRAINT uq_tipo_cuenta_clase UNIQUE (clase),
+    -- Una clase admite ambas naturalezas para las contracuentas
+    -- (ej. Depreciación Acumulada = ACTIVO con naturaleza CREDITO).
+    CONSTRAINT uq_tipo_cuenta_clase_naturaleza UNIQUE (clase, naturaleza),
     CONSTRAINT ck_tipo_cuenta_clase CHECK (
         clase IN ('ACTIVO', 'PASIVO', 'PATRIMONIO', 'INGRESO', 'COSTO', 'GASTO')
     ),
@@ -109,11 +111,13 @@ CREATE TABLE IF NOT EXISTS plan_cuenta (
     acepta_movimiento BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT pk_plan_cuenta PRIMARY KEY (id_cuenta),
     CONSTRAINT uq_plan_cuenta_empresa_codigo UNIQUE (id_empresa, codigo),
+    CONSTRAINT uq_plan_cuenta_empresa_id UNIQUE (id_empresa, id_cuenta),
     CONSTRAINT fk_plan_cuenta_empresa FOREIGN KEY (id_empresa)
         REFERENCES empresa (id_empresa)
         ON UPDATE RESTRICT ON DELETE RESTRICT,
-    CONSTRAINT fk_plan_cuenta_padre FOREIGN KEY (id_cuenta_padre)
-        REFERENCES plan_cuenta (id_cuenta)
+    -- La cuenta padre debe pertenecer a la misma empresa que la cuenta hija.
+    CONSTRAINT fk_plan_cuenta_padre FOREIGN KEY (id_empresa, id_cuenta_padre)
+        REFERENCES plan_cuenta (id_empresa, id_cuenta)
         ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT fk_plan_cuenta_tipo FOREIGN KEY (id_tipo_cuenta)
         REFERENCES tipo_cuenta (id_tipo_cuenta)
@@ -213,7 +217,7 @@ CREATE TABLE IF NOT EXISTS movimiento (
     CONSTRAINT pk_movimiento PRIMARY KEY (id_movimiento),
     CONSTRAINT fk_movimiento_asiento FOREIGN KEY (id_asiento)
         REFERENCES asiento (id_asiento)
-        ON UPDATE RESTRICT ON DELETE CASCADE,
+        ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT fk_movimiento_cuenta FOREIGN KEY (id_cuenta)
         REFERENCES plan_cuenta (id_cuenta)
         ON UPDATE RESTRICT ON DELETE RESTRICT,
@@ -248,3 +252,13 @@ CREATE TABLE IF NOT EXISTS cierre_periodo (
         REFERENCES asiento (id_asiento)
         ON UPDATE RESTRICT ON DELETE RESTRICT
 );
+
+-- ----------------------------------------------------------------------------
+-- 13. ÍNDICES SOBRE LLAVES FORÁNEAS
+-- PostgreSQL no indexa automáticamente las FK; los reportes las recorren.
+-- ----------------------------------------------------------------------------
+CREATE INDEX IF NOT EXISTS ix_asiento_periodo ON asiento (id_periodo);
+CREATE INDEX IF NOT EXISTS ix_movimiento_asiento ON movimiento (id_asiento);
+CREATE INDEX IF NOT EXISTS ix_movimiento_cuenta ON movimiento (id_cuenta);
+CREATE INDEX IF NOT EXISTS ix_plan_cuenta_padre ON plan_cuenta (id_cuenta_padre);
+CREATE INDEX IF NOT EXISTS ix_plan_cuenta_rubro ON plan_cuenta (id_rubro);

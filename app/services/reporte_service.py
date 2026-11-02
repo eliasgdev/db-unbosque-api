@@ -26,6 +26,7 @@ from app.schemas.reportes import (
 )
 
 CERO = Decimal("0.00")
+CLASES_NATURALEZA_CREDITO = frozenset({"PASIVO", "PATRIMONIO", "INGRESO"})
 
 
 class ReporteService:
@@ -200,11 +201,17 @@ class ReporteService:
 
     @staticmethod
     def _calcular_saldo_segun_naturaleza(fila: FilaDict) -> Decimal:
-        """Calcula el saldo neto de una cuenta según su naturaleza DEBITO o CREDITO."""
+        """Calcula el saldo de una cuenta con el signo de la naturaleza de su clase.
+
+        Se usa la naturaleza propia de la clase (ACTIVO/COSTO/GASTO = DEBITO;
+        PASIVO/PATRIMONIO/INGRESO = CREDITO) y no la de la cuenta, para que las
+        contracuentas (ej. Depreciación Acumulada: ACTIVO con naturaleza CREDITO)
+        resten del total de su clase y de los subtotales de su rubro.
+        """
         debe = Decimal(str(fila.get("total_debe") or "0.00"))
         haber = Decimal(str(fila.get("total_haber") or "0.00"))
-        naturaleza = str(fila.get("naturaleza") or "DEBITO").upper()
-        if naturaleza == "CREDITO":
+        clase = str(fila.get("clase") or "").upper()
+        if clase in CLASES_NATURALEZA_CREDITO:
             return haber - debe
         return debe - haber
 

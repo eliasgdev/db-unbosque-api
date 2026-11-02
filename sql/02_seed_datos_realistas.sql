@@ -45,7 +45,7 @@ INSERT INTO moneda (codigo, nombre, simbolo) VALUES
     ('GBP', 'Libra Esterlina', '£');
 
 -- ============================================================================
--- 2. TIPO_CUENTA (IDs: 1..6)
+-- 2. TIPO_CUENTA (IDs: 1..7)
 -- ============================================================================
 INSERT INTO tipo_cuenta (clase, naturaleza) VALUES
     ('ACTIVO', 'DEBITO'),       -- ID 1
@@ -53,7 +53,8 @@ INSERT INTO tipo_cuenta (clase, naturaleza) VALUES
     ('PATRIMONIO', 'CREDITO'),  -- ID 3
     ('INGRESO', 'CREDITO'),     -- ID 4
     ('COSTO', 'DEBITO'),        -- ID 5
-    ('GASTO', 'DEBITO');        -- ID 6
+    ('GASTO', 'DEBITO'),        -- ID 6
+    ('ACTIVO', 'CREDITO');      -- ID 7: contracuentas de activo (depreciación, deterioro)
 
 -- ============================================================================
 -- 3. TIPO_ASIENTO (IDs: 1..4)
@@ -174,7 +175,7 @@ INSERT INTO plan_cuenta (id_empresa, id_cuenta_padre, id_tipo_cuenta, id_rubro, 
     (1, 11, 1, 14, '1524', 'Equipo de Oficina', 3, FALSE),                     -- ID 31
     (1, 11, 1, 14, '1528', 'Equipo de Computación y Comunicación', 3, FALSE),  -- ID 32
     (1, 11, 1, 14, '1540', 'Flota y Equipo de Transporte', 3, FALSE),          -- ID 33
-    (1, 11, 1, 14, '1592', 'Depreciación Acumulada', 3, FALSE),                -- ID 34
+    (1, 11, 7, 14, '1592', 'Depreciación Acumulada', 3, FALSE),                -- ID 34
     (1, 12, 2, 7,  '2105', 'Bancos Nacionales - Pagarés', 3, FALSE),           -- ID 35
     (1, 13, 2, 15, '2205', 'Proveedores Nacionales', 3, FALSE),                -- ID 36
     (1, 14, 2, 15, '2335', 'Costos y Gastos por Pagar', 3, FALSE),             -- ID 37
@@ -210,7 +211,7 @@ INSERT INTO plan_cuenta (id_empresa, id_cuenta_padre, id_tipo_cuenta, id_rubro, 
     (1, 31, 1, 14, '152405', 'Muebles y Enseres de Oficina', 4, TRUE),                           -- ID 64
     (1, 32, 1, 14, '152805', 'Equipos de Procesamiento de Datos Corporativos', 4, TRUE),         -- ID 65
     (1, 33, 1, 14, '154005', 'Camionetas de Reparto y Logística', 4, TRUE),                      -- ID 66
-    (1, 34, 1, 14, '159205', 'Depreciación Acumulada Propiedad, Planta y Equipo', 4, TRUE),      -- ID 67
+    (1, 34, 7, 14, '159205', 'Depreciación Acumulada Propiedad, Planta y Equipo', 4, TRUE),      -- ID 67
     (1, 35, 2, 7,  '210510', 'Pagaré Crédito Empresarial Bancolombia LP', 4, TRUE),              -- ID 68
     (1, 36, 2, 15, '220505', 'Proveedores Nacionales de Hardware y Software', 4, TRUE),          -- ID 69
     (1, 37, 2, 15, '233525', 'Honorarios, Arrendamientos y Servicios por Pagar', 4, TRUE),       -- ID 70
@@ -689,5 +690,13 @@ INSERT INTO movimiento (id_asiento, id_cuenta, id_tercero, id_centro_costo, debe
     (31, 107, 27,   11, 0.00,         45000000.00),
     (31, 112, 30,   11, 16000000.00,  0.00),
     (31, 106, 26,   13, 0.00,         16000000.00);
+
+-- ============================================================================
+-- 17. CIERRES SIN MOVIMIENTOS — Periodos 7 y 9 (2025, CERRADOS)
+-- ============================================================================
+-- Ambos periodos se cerraron sin asientos: utilidad cero y sin asiento de cierre.
+INSERT INTO cierre_periodo (id_periodo, id_asiento_cierre, utilidad_neta, fecha_cierre) VALUES
+    (7, NULL, 0.00, '2025-12-31 23:59:00-05'),
+    (9, NULL, 0.00, '2025-12-31 23:59:00-05');
 
 COMMIT;

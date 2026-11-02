@@ -15,9 +15,10 @@ api (routers) → services → repositories → core/database
 - `app/api/`: Routers HTTP bajo `/api/v1`, inyección de dependencias (`deps.py`) y metadatos OpenAPI/Swagger.
 - `app/schemas/`: Modelos Pydantic v2 (`Decimal` para montos monetarios, `date`/`datetime` para fechas).
 - `app/services/`: Reglas contables (partida doble, periodo cerrado, cuentas hoja, cierre atómico y cálculo dinámico de Balance General y Estado de Resultados).
-- `app/repositories/`: Un módulo por entidad con las constantes `_SQL_<ACCION> = """"""` vacías y documentadas para ser completadas manualmente por el equipo.
+- `app/repositories/`: Un módulo por entidad con las constantes `_SQL_<ACCION>` documentadas (propósito, parámetros, retorno y tablas) y escritas manualmente por el equipo con SQL parametrizado.
 - `app/core/`: Configuración desde `.env`, pool asíncrono de PostgreSQL, excepciones de dominio (`404`, `409`, `422`, `501`) y logging.
-- `sql/ddl_esquema.sql`: Esqueleto DDL en blanco con la especificación comentada de las 12 entidades en 3FN.
+- `sql/01_ddl_tablas.sql`: DDL de PostgreSQL con las 12 entidades en 3FN, sus restricciones e índices.
+- `sql/02_seed_datos_realistas.sql`: Datos de prueba realistas (4 empresas, 10 periodos, plan de cuentas, asientos y cierres).
 
 ---
 

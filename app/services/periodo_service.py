@@ -144,6 +144,18 @@ class PeriodoService:
                     f"id_periodo={id_periodo}."
                 )
 
+            asientos_periodo = await self._asiento_repo.listar_por_periodo(
+                sesion, id_periodo
+            )
+            borradores = [a for a in asientos_periodo if a.get("estado") == "BORRADOR"]
+            if borradores:
+                numeros = ", ".join(str(a["numero"]) for a in borradores)
+                raise ReglaDeNegocio(
+                    "No se puede cerrar el periodo: tiene "
+                    f"{len(borradores)} asiento(s) en BORRADOR (números {numeros}). "
+                    "Contabilícelos o corríjalos antes del cierre."
+                )
+
             id_empresa = int(periodo["id_empresa"])
             cuenta_pat = await self._cuenta_repo.obtener_por_id(
                 sesion, datos.id_cuenta_patrimonio
