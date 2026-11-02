@@ -1,0 +1,35 @@
+# Servicio systemd de la API del Sistema Contable (VM-Back).
+# Instalar en /etc/systemd/system/contable-api.service y ejecutar:
+#   sudo systemctl daemon-reload && sudo systemctl enable --now contable-api
+[Unit]
+Description=API del Sistema Contable (FastAPI + Uvicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Usuario de sistema sin shell ni privilegios, dueño solo del código y del .env.
+User=contable
+Group=contable
+WorkingDirectory=/opt/db-unbosque-api
+# La aplicación lee .env desde WorkingDirectory (permisos 600, dueño contable).
+# --proxy-headers / --forwarded-allow-ips: confía solo en el nginx de VM-Front
+# para obtener la IP real del cliente. Ajustar la IP si cambia la de VM-Front.
+ExecStart=/opt/db-unbosque-api/.venv/bin/uvicorn app.main:app \
+    --host 0.0.0.0 --port 8000 --workers 2 \
+    --proxy-headers --forwarded-allow-ips 10.0.1.4 \
+    --no-server-header
+Restart=on-failure
+RestartSec=5
+
+# Endurecimiento: el proceso no puede escalar privilegios ni escribir en el sistema.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target
