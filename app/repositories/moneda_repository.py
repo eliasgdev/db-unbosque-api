@@ -11,13 +11,29 @@ from app.core.database import (
 # Parámetros: ninguno.
 # Retorna: lista de filas de MONEDA (id_moneda, codigo, nombre, simbolo).
 # Tablas: MONEDA.
-_SQL_LISTAR_MONEDAS = """"""
+_SQL_LISTAR_MONEDAS = """
+SELECT
+    id_moneda,
+    codigo,
+    nombre,
+    simbolo
+FROM moneda
+ORDER BY codigo ASC;
+"""
 
 # Propósito: obtener una moneda por su identificador primario.
 # Parámetros: id_moneda (int).
 # Retorna: una fila de MONEDA o ninguna.
 # Tablas: MONEDA.
-_SQL_OBTENER_POR_ID = """"""
+_SQL_OBTENER_POR_ID = """
+SELECT
+    id_moneda,
+    codigo,
+    nombre,
+    simbolo
+FROM moneda
+WHERE id_moneda = %(id_moneda)s;
+"""
 
 
 class MonedaRepository:

@@ -8,24 +8,58 @@ from app.core.database import (
 )
 
 # Propósito: listar todos los rubros de estados financieros ordenados por
-#   estado_financiero y orden.
+#            estado_financiero y orden, incluyendo LEFT JOIN a su rubro padre.
 # Parámetros: ninguno.
 # Retorna: lista de filas de RUBRO_ESTADO.
 # Tablas: RUBRO_ESTADO.
-_SQL_LISTAR_RUBROS = """"""
+_SQL_LISTAR_RUBROS = """
+SELECT
+    r.id_rubro,
+    r.id_rubro_padre,
+    r.codigo,
+    r.nombre,
+    r.estado_financiero,
+    r.orden
+FROM rubro_estado r
+LEFT JOIN rubro_estado rp ON rp.id_rubro = r.id_rubro_padre
+ORDER BY r.estado_financiero ASC, r.orden ASC, r.id_rubro ASC;
+"""
 
-# Propósito: listar los rubros pertenecientes a un estado financiero específico (BALANCE
-#   o RESULTADOS).
+# Propósito: listar los rubros pertenecientes a un estado financiero específico
+#            (BALANCE o RESULTADOS) usando LEFT JOIN sobre el rubro padre.
 # Parámetros: estado_financiero (str).
 # Retorna: lista de filas de RUBRO_ESTADO ordenadas por orden.
 # Tablas: RUBRO_ESTADO.
-_SQL_LISTAR_POR_ESTADO_FINANCIERO = """"""
+_SQL_LISTAR_POR_ESTADO_FINANCIERO = """
+SELECT
+    r.id_rubro,
+    r.id_rubro_padre,
+    r.codigo,
+    r.nombre,
+    r.estado_financiero,
+    r.orden
+FROM rubro_estado r
+LEFT JOIN rubro_estado rp ON rp.id_rubro = r.id_rubro_padre
+WHERE r.estado_financiero = %(estado_financiero)s
+ORDER BY r.orden ASC, r.id_rubro ASC;
+"""
 
 # Propósito: obtener un rubro de estado financiero por su identificador primario.
 # Parámetros: id_rubro (int).
 # Retorna: una fila de RUBRO_ESTADO o ninguna.
 # Tablas: RUBRO_ESTADO.
-_SQL_OBTENER_POR_ID = """"""
+_SQL_OBTENER_POR_ID = """
+SELECT
+    r.id_rubro,
+    r.id_rubro_padre,
+    r.codigo,
+    r.nombre,
+    r.estado_financiero,
+    r.orden
+FROM rubro_estado r
+LEFT JOIN rubro_estado rp ON rp.id_rubro = r.id_rubro_padre
+WHERE r.id_rubro = %(id_rubro)s;
+"""
 
 
 class RubroEstadoRepository:

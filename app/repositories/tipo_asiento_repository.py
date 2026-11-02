@@ -7,24 +7,42 @@ from app.core.database import (
     ejecutar_consulta_uno,
 )
 
-# Propósito: listar todos los tipos de asiento contable (APERTURA, DIARIO, AJUSTE,
-#   CIERRE).
+# Propósito: listar todos los tipos de asiento contable
+#            (APERTURA, DIARIO, AJUSTE, CIERRE).
 # Parámetros: ninguno.
 # Retorna: lista de filas de TIPO_ASIENTO.
 # Tablas: TIPO_ASIENTO.
-_SQL_LISTAR_TIPOS_ASIENTO = """"""
+_SQL_LISTAR_TIPOS_ASIENTO = """
+SELECT
+    id_tipo_asiento,
+    nombre
+FROM tipo_asiento
+ORDER BY id_tipo_asiento ASC;
+"""
 
 # Propósito: obtener un tipo de asiento por su identificador primario.
 # Parámetros: id_tipo_asiento (int).
 # Retorna: una fila de TIPO_ASIENTO o ninguna.
 # Tablas: TIPO_ASIENTO.
-_SQL_OBTENER_POR_ID = """"""
+_SQL_OBTENER_POR_ID = """
+SELECT
+    id_tipo_asiento,
+    nombre
+FROM tipo_asiento
+WHERE id_tipo_asiento = %(id_tipo_asiento)s;
+"""
 
 # Propósito: obtener un tipo de asiento por su nombre único (ej. CIERRE).
 # Parámetros: nombre (str).
 # Retorna: una fila de TIPO_ASIENTO o ninguna.
 # Tablas: TIPO_ASIENTO.
-_SQL_OBTENER_POR_NOMBRE = """"""
+_SQL_OBTENER_POR_NOMBRE = """
+SELECT
+    id_tipo_asiento,
+    nombre
+FROM tipo_asiento
+WHERE nombre = %(nombre)s;
+"""
 
 
 class TipoAsientoRepository:
