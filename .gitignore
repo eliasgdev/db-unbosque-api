@@ -1,3 +1,19 @@
+# Entornos virtuales y caché de Python
 .venv/
+venv/
 __pycache__/
+*.py[cod]
+*$py.class
+.mypy_cache/
+.ruff_cache/
+
+# Configuración local y secretos (nunca versionar)
 .env
+.env.*
+!.env.example
+
+# Archivos de sistema e IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

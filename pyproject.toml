@@ -1,0 +1,50 @@
+[project]
+name = "db-unbosque-api"
+version = "1.0.0"
+description = "API REST del Sistema Contable (Balance General y Estado de Resultados) - Universidad El Bosque"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.5.0",
+    "psycopg[binary]>=3.2.0",
+    "psycopg-pool>=3.2.0",
+    "uvicorn[standard]>=0.30.0",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.11.0",
+    "ruff>=0.7.0",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = ["app"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "B",
+    "UP",
+    "N",
+    "SIM",
+    "RUF",
+]
+ignore = ["N818"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
