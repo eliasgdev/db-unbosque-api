@@ -19,6 +19,8 @@ api (routers) → services → repositories → core/database
 - `app/core/`: Configuración desde `.env`, pool asíncrono de PostgreSQL, excepciones de dominio (`404`, `409`, `422`, `501`) y logging.
 - `sql/01_ddl_tablas.sql`: DDL de PostgreSQL con las 12 entidades en 3FN, sus restricciones e índices.
 - `sql/02_seed_datos_realistas.sql`: Datos de prueba realistas (4 empresas, 10 periodos, plan de cuentas, asientos y cierres).
+- `sql/03_roles_produccion.sql`: Usuario de la aplicación con privilegio mínimo.
+- `sql/README.md`: Guía de implementación de la base de datos (instalación, ejecución de scripts, red, verificación y respaldos).
 
 ---
 
@@ -86,6 +88,8 @@ uv run mypy app
 La API corre en VM-Back detrás del nginx de VM-Front; no se expone a internet. `/docs` y `/redoc` quedan accesibles solo desde la red privada, porque nginx únicamente reenvía `/api/`.
 
 ### 1. Base de datos (VM-DB)
+
+La guía completa está en [`sql/README.md`](sql/README.md). En resumen:
 
 ```bash
 psql -d contabilidad_db -f sql/01_ddl_tablas.sql
