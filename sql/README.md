@@ -11,8 +11,10 @@ Scripts que llevan el modelo lógico del Sistema Contable (12 entidades en 3FN) 
 | `01_ddl_tablas.sql` | Creación de objetos | Habilita `btree_gist` y crea las 12 tablas con llaves primarias, foráneas, restricciones `UNIQUE`, `CHECK`, `EXCLUDE` y 5 índices | Dueño de la base |
 | `02_seed_datos_realistas.sql` | Inserción de registros | Vacía las tablas y carga datos contables de 4 empresas dentro de una transacción | Dueño de la base |
 | `03_roles_produccion.sql` | Scripts varios | Crea el usuario de la aplicación con privilegio mínimo (solo lectura y escritura de datos) | `postgres` |
+| `04_algebra_relacional.sql` | Scripts varios | Las 51 sentencias de álgebra relacional del proyecto traducidas a SQL (solo consultan) | Dueño de la base |
+| `05_verificacion.sql` | Scripts varios | Comprobaciones de estructura y de las reglas contables (solo consultan) | Dueño de la base |
 
-Orden obligatorio: `01` → `02` → `03`.
+Orden obligatorio: `01` → `02` → `03`. Los scripts `04` y `05` son opcionales y se pueden ejecutar en cualquier momento después de `02`.
 
 ## Requisitos
 
@@ -141,7 +143,21 @@ HAVING SUM(debe) <> SUM(haber);
 | movimiento | 152 |
 | cierre_periodo | 6 |
 
-## 6. Objetos creados por `01_ddl_tablas.sql`
+También se puede ejecutar el script completo de comprobaciones, que muestra el número de tablas, las restricciones por tipo, las reglas contables (cada consulta debe devolver 0 filas) y la ecuación contable de cada empresa:
+
+```bash
+psql -h localhost -U contabilidad_admin -d contabilidad_db -f sql/05_verificacion.sql
+```
+
+## 6. Álgebra relacional en SQL
+
+`04_algebra_relacional.sql` contiene las 51 sentencias de álgebra relacional del proyecto. Cada consulta lleva como comentario su enunciado, la expresión en álgebra y las filas que devuelve con los datos de prueba. La división (÷) se expresa con `NOT EXISTS ( … EXCEPT … )`.
+
+```bash
+psql -h localhost -U contabilidad_admin -d contabilidad_db -f sql/04_algebra_relacional.sql
+```
+
+## 7. Objetos creados por `01_ddl_tablas.sql`
 
 | Mecanismo | Qué garantiza |
 |---|---|
@@ -155,7 +171,7 @@ HAVING SUM(debe) <> SUM(haber);
 
 Las reglas que comparan varias filas (la partida doble de un asiento, no registrar en periodos cerrados) se validan en la capa de servicios de la API.
 
-## 7. Reiniciar los datos de prueba
+## 8. Reiniciar los datos de prueba
 
 `02_seed_datos_realistas.sql` empieza con `TRUNCATE ... RESTART IDENTITY CASCADE`, así que volver a ejecutarlo deja los datos de prueba como al inicio:
 
@@ -165,7 +181,7 @@ psql -h localhost -U contabilidad_admin -d contabilidad_db -v ON_ERROR_STOP=1 -f
 
 Borra todos los datos, incluidos los registrados desde la aplicación.
 
-## 8. Respaldo y restauración
+## 9. Respaldo y restauración
 
 ```bash
 # Respaldo (formato comprimido de PostgreSQL)
